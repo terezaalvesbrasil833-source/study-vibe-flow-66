@@ -1,0 +1,194 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    --background: 225 25% 98%;
+    --foreground: 215 25% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 215 25% 15%;
+
+    --primary: 210 100% 50%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 15% 95%;
+    --secondary-foreground: 215 25% 15%;
+
+    --muted: 220 13% 91%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 200 100% 95%;
+    --accent-foreground: 200 100% 30%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 355 20% 99%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 26 83% 14%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 210 100% 50%;
+
+    --radius: 0.75rem;
+
+    /* Study schedule specific colors */
+    --study-math: 260 100% 95%;
+    --study-math-foreground: 260 100% 40%;
+    --study-science: 170 100% 95%;
+    --study-science-foreground: 170 100% 30%;
+    --study-language: 340 100% 95%;
+    --study-language-foreground: 340 100% 40%;
+    --study-history: 30 100% 95%;
+    --study-history-foreground: 30 100% 35%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 50%), hsl(220 100% 60%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 13% 96%));
+    --gradient-hover: linear-gradient(145deg, hsl(220 13% 96%), hsl(220 13% 91%));
+
+    /* Shadows */
+    --shadow-card: 0 4px 6px -1px hsl(220 13% 91% / 0.3), 0 2px 4px -1px hsl(220 13% 91% / 0.06);
+    --shadow-hover: 0 10px 15px -3px hsl(220 13% 91% / 0.4), 0 4px 6px -2px hsl(220 13% 91% / 0.05);
+    --shadow-focus: 0 0 0 3px hsl(210 100% 50% / 0.2);
+
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 215 25% 8%;
+    --foreground: 210 20% 90%;
+
+    --card: 215 25% 10%;
+    --card-foreground: 210 20% 90%;
+
+    --popover: 215 25% 10%;
+    --popover-foreground: 210 20% 90%;
+
+    --primary: 210 100% 60%;
+    --primary-foreground: 215 25% 8%;
+
+    --secondary: 215 25% 15%;
+    --secondary-foreground: 210 20% 90%;
+
+    --muted: 215 25% 15%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 200 100% 20%;
+    --accent-foreground: 200 100% 90%;
+
+    --success: 142 76% 45%;
+    --success-foreground: 355 20% 99%;
+
+    --warning: 38 92% 60%;
+    --warning-foreground: 26 83% 14%;
+
+    --destructive: 0 84% 70%;
+    --destructive-foreground: 210 20% 98%;
+
+    --border: 215 25% 15%;
+    --input: 215 25% 15%;
+    --ring: 210 100% 60%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Study schedule dark colors */
+    --study-math: 260 100% 20%;
+    --study-math-foreground: 260 100% 85%;
+    --study-science: 170 100% 20%;
+    --study-science-foreground: 170 100% 85%;
+    --study-language: 340 100% 20%;
+    --study-language-foreground: 340 100% 85%;
+    --study-history: 30 100% 20%;
+    --study-history-foreground: 30 100% 85%;
+
+    /* Dark gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(210 100% 60%), hsl(220 100% 70%));
+    --gradient-card: linear-gradient(145deg, hsl(215 25% 10%), hsl(215 25% 12%));
+    --gradient-hover: linear-gradient(145deg, hsl(215 25% 12%), hsl(215 25% 15%));
+
+    /* Dark shadows */
+    --shadow-card: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -1px hsl(0 0% 0% / 0.1);
+    --shadow-hover: 0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -2px hsl(0 0% 0% / 0.1);
+    --shadow-focus: 0 0 0 3px hsl(210 100% 60% / 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-medium;
+  }
+
+  /* Study schedule specific utilities */
+  .study-card {
+    @apply relative rounded-lg border border-border bg-gradient-to-br from-card to-card/50 shadow-[var(--shadow-card)] transition-[var(--transition-fast)] hover:shadow-[var(--shadow-hover)];
+  }
+
+  .study-card-dragging {
+    @apply shadow-[var(--shadow-hover)] scale-105 rotate-2;
+  }
+
+  .study-card-math {
+    @apply bg-gradient-to-br from-[hsl(var(--study-math))] to-[hsl(var(--study-math))]/80 border-[hsl(var(--study-math-foreground))]/20;
+  }
+
+  .study-card-science {
+    @apply bg-gradient-to-br from-[hsl(var(--study-science))] to-[hsl(var(--study-science))]/80 border-[hsl(var(--study-science-foreground))]/20;
+  }
+
+  .study-card-language {
+    @apply bg-gradient-to-br from-[hsl(var(--study-language))] to-[hsl(var(--study-language))]/80 border-[hsl(var(--study-language-foreground))]/20;
+  }
+
+  .study-card-history {
+    @apply bg-gradient-to-br from-[hsl(var(--study-history))] to-[hsl(var(--study-history))]/80 border-[hsl(var(--study-history-foreground))]/20;
+  }
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+}
