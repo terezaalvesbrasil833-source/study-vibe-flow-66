@@ -12,12 +12,32 @@ import { Progress } from '@/components/ui/progress';
 import { toast } from '@/hooks/use-toast';
 import { ButtonIcon } from '@/components/ui/button-icon';
 
+// Função para calcular as datas da semana atual
+const getCurrentWeekDates = () => {
+  const today = new Date();
+  const currentDay = today.getDay(); // 0 = domingo, 1 = segunda, etc.
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - currentDay + 1); // Calcular segunda-feira
+  
+  return {
+    monday: new Date(monday),
+    tuesday: new Date(monday.getTime() + 24 * 60 * 60 * 1000),
+    wednesday: new Date(monday.getTime() + 2 * 24 * 60 * 60 * 1000),
+    thursday: new Date(monday.getTime() + 3 * 24 * 60 * 60 * 1000),
+    friday: new Date(monday.getTime() + 4 * 24 * 60 * 60 * 1000),
+    saturday: new Date(monday.getTime() + 5 * 24 * 60 * 60 * 1000),
+    sunday: new Date(monday.getTime() + 6 * 24 * 60 * 60 * 1000)
+  };
+};
+
+const weekDates = getCurrentWeekDates();
+
 // Dados de exemplo
 const initialDays: DaySchedule[] = [
   {
     id: 'monday',
     day: 'monday',
-    date: new Date(2025, 0, 27),
+    date: weekDates.monday,
     tasks: [
       {
         id: '1',
@@ -42,7 +62,7 @@ const initialDays: DaySchedule[] = [
   {
     id: 'tuesday',
     day: 'tuesday',
-    date: new Date(2025, 0, 28),
+    date: weekDates.tuesday,
     tasks: [
       {
         id: '3',
@@ -58,7 +78,7 @@ const initialDays: DaySchedule[] = [
   {
     id: 'wednesday',
     day: 'wednesday',
-    date: new Date(2025, 0, 29),
+    date: weekDates.wednesday,
     tasks: [
       {
         id: '4',
@@ -74,19 +94,19 @@ const initialDays: DaySchedule[] = [
   {
     id: 'thursday',
     day: 'thursday',
-    date: new Date(2025, 0, 30),
+    date: weekDates.thursday,
     tasks: [],
   },
   {
     id: 'friday',
     day: 'friday',
-    date: new Date(2025, 0, 31),
+    date: weekDates.friday,
     tasks: [],
   },
   {
     id: 'saturday',
     day: 'saturday',
-    date: new Date(2025, 1, 1),
+    date: weekDates.saturday,
     tasks: [
       {
         id: '5',
@@ -102,7 +122,7 @@ const initialDays: DaySchedule[] = [
   {
     id: 'sunday',
     day: 'sunday',
-    date: new Date(2025, 1, 2),
+    date: weekDates.sunday,
     tasks: [
       {
         id: '6',
@@ -121,7 +141,7 @@ const weekendDays: DaySchedule[] = [
   {
     id: 'saturday',
     day: 'saturday',
-    date: new Date(2025, 1, 1),
+    date: weekDates.saturday,
     tasks: [
       {
         id: '5',
@@ -137,7 +157,7 @@ const weekendDays: DaySchedule[] = [
   {
     id: 'sunday',
     day: 'sunday',
-    date: new Date(2025, 1, 2),
+    date: weekDates.sunday,
     tasks: [
       {
         id: '6',
@@ -156,7 +176,7 @@ const weekDays: DaySchedule[] = [
   {
     id: 'monday',
     day: 'monday',
-    date: new Date(2025, 0, 27),
+    date: weekDates.monday,
     tasks: [
       {
         id: '1',
@@ -181,7 +201,7 @@ const weekDays: DaySchedule[] = [
   {
     id: 'tuesday',
     day: 'tuesday',
-    date: new Date(2025, 0, 28),
+    date: weekDates.tuesday,
     tasks: [
       {
         id: '3',
@@ -197,7 +217,7 @@ const weekDays: DaySchedule[] = [
   {
     id: 'wednesday',
     day: 'wednesday',
-    date: new Date(2025, 0, 29),
+    date: weekDates.wednesday,
     tasks: [
       {
         id: '4',
@@ -213,13 +233,13 @@ const weekDays: DaySchedule[] = [
   {
     id: 'thursday',
     day: 'thursday',
-    date: new Date(2025, 0, 30),
+    date: weekDates.thursday,
     tasks: [],
   },
   {
     id: 'friday',
     day: 'friday',
-    date: new Date(2025, 0, 31),
+    date: weekDates.friday,
     tasks: [],
   },
 ];
