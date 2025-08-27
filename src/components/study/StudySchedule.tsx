@@ -316,6 +316,36 @@ export function StudySchedule() {
   // Calcular progresso semanal
   const weeklyProgress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
+  // Mapear nomes das matérias
+  const subjectNames = {
+    math: 'Matemática',
+    science: 'Ciências',
+    language: 'Linguagem',
+    history: 'História'
+  };
+
+  // Contar matérias por tipo hoje
+  const todaySubjectCounts = currentDay ? currentDay.tasks.reduce((acc, task) => {
+    acc[task.subject] = (acc[task.subject] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>) : {};
+
+  // Contar matérias por tipo na semana
+  const weeklySubjectCounts = days.flatMap(day => day.tasks).reduce((acc, task) => {
+    acc[task.subject] = (acc[task.subject] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Formatar lista de matérias hoje
+  const todaySubjectsList = Object.entries(todaySubjectCounts)
+    .map(([subject, count]) => `${count.toString().padStart(2, '0')} - ${subjectNames[subject as keyof typeof subjectNames]}`)
+    .join('\n');
+
+  // Formatar lista de matérias na semana
+  const weeklySubjectsList = Object.entries(weeklySubjectCounts)
+    .map(([subject, count]) => `${count.toString().padStart(2, '0')} - ${subjectNames[subject as keyof typeof subjectNames]}`)
+    .join('\n');
+
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -336,7 +366,7 @@ export function StudySchedule() {
           </div>
 
           {/* Estatísticas */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
@@ -364,20 +394,30 @@ export function StudySchedule() {
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                <CardTitle className="text-sm font-medium flex items-center gap-2 ml-4">
                   <Clock className="h-4 w-4 text-primary" />
                   Tempo Total
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-primary">
-                  {Math.floor(totalMinutes / 60)}h {totalMinutes % 60}m
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Semana completa
-                </p>
-                <div className="text-sm font-medium text-primary/70 mt-1">
-                  Hoje: {Math.floor(todayMinutes / 60)}h {todayMinutes % 60}m
+                <div className="flex items-center justify-center gap-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">
+                      {Math.floor(todayMinutes / 60)}h {todayMinutes % 60}m
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Hoje
+                    </p>
+                  </div>
+                  <div className="w-px h-12 bg-border"></div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">
+                      {Math.floor(totalMinutes / 60)}h {totalMinutes % 60}m
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Semana completa
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -386,33 +426,33 @@ export function StudySchedule() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <BookOpen className="h-4 w-4 text-accent-foreground" />
-                  Tarefas Ativas
+                  Matérias
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-accent-foreground">
-                  {totalTasks - completedTasks}
+                <div className="flex justify-center items-center gap-4">
+                  <div className="text-center">
+                    <div className="text-xs font-medium text-muted-foreground mb-1">Hoje:</div>
+                    {todaySubjectsList ? (
+                      <div className="text-xs text-primary whitespace-pre-line leading-tight">
+                        {todaySubjectsList}
+                      </div>
+                    ) : (
+                      <div className="text-xs text-muted-foreground">Nenhuma tarefa</div>
+                    )}
+                  </div>
+                  <div className="w-px h-8 bg-border"></div>
+                  <div className="text-center">
+                    <div className="text-xs font-medium text-muted-foreground mb-1">Semana completa:</div>
+                    {weeklySubjectsList ? (
+                      <div className="text-xs text-primary whitespace-pre-line leading-tight">
+                        {weeklySubjectsList}
+                      </div>
+                    ) : (
+                      <div className="text-xs text-muted-foreground">Nenhuma tarefa</div>
+                    )}
+                  </div>
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Pendentes
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-success" />
-                  Concluídas
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-success">
-                  {completedTasks}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  Total finalizadas
-                </p>
               </CardContent>
             </Card>
           </div>
