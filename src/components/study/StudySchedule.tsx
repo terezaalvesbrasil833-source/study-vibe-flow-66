@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { DndContext, DragEndEvent, DragOverEvent, DragStartEvent, PointerSensor, useSensor, useSensors, DragOverlay, closestCorners } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { Calendar, Plus, TrendingUp, Clock, BookOpen, Target } from 'lucide-react';
@@ -137,133 +137,31 @@ const initialDays: DaySchedule[] = [
   },
 ];
 
-const weekendDays: DaySchedule[] = [
-  {
-    id: 'saturday',
-    day: 'saturday',
-    date: weekDates.saturday,
-    tasks: [
-      {
-        id: '5',
-        title: 'Revisão geral de matemática',
-        subject: 'math',
-        duration: 90,
-        completed: false,
-        priority: 'high',
-        description: 'Revisão dos tópicos da semana',
-      },
-    ],
-  },
-  {
-    id: 'sunday',
-    day: 'sunday',
-    date: weekDates.sunday,
-    tasks: [
-      {
-        id: '6',
-        title: 'Leitura complementar',
-        subject: 'language',
-        duration: 60,
-        completed: false,
-        priority: 'medium',
-        description: 'Livro de literatura brasileira',
-      },
-    ],
-  },
-];
 
-const weekDays: DaySchedule[] = [
-  {
-    id: 'monday',
-    day: 'monday',
-    date: weekDates.monday,
-    tasks: [
-      {
-        id: '1',
-        title: 'Resolver exercícios de álgebra',
-        subject: 'math',
-        duration: 45,
-        completed: false,
-        priority: 'high',
-        description: 'Capítulo 3 - Equações de segundo grau',
-      },
-      {
-        id: '2',
-        title: 'Estudar células vegetais',
-        subject: 'science',
-        duration: 30,
-        completed: true,
-        priority: 'medium',
-        description: 'Fotossíntese e respiração celular',
-      },
-    ],
-  },
-  {
-    id: 'tuesday',
-    day: 'tuesday',
-    date: weekDates.tuesday,
-    tasks: [
-      {
-        id: '3',
-        title: 'Redação sobre meio ambiente',
-        subject: 'language',
-        duration: 60,
-        completed: false,
-        priority: 'high',
-        description: 'Texto dissertativo-argumentativo',
-      },
-    ],
-  },
-  {
-    id: 'wednesday',
-    day: 'wednesday',
-    date: weekDates.wednesday,
-    tasks: [
-      {
-        id: '4',
-        title: 'Revolução Industrial',
-        subject: 'history',
-        duration: 40,
-        completed: false,
-        priority: 'medium',
-        description: 'Primeira e segunda fases',
-      },
-    ],
-  },
-  {
-    id: 'thursday',
-    day: 'thursday',
-    date: weekDates.thursday,
-    tasks: [],
-  },
-  {
-    id: 'friday',
-    day: 'friday',
-    date: weekDates.friday,
-    tasks: [],
-  },
-];
 
 export function StudySchedule() {
-  // Array completo com todos os dias para estatísticas
-  const [allDays, setAllDays] = useState<DaySchedule[]>([...weekDays, ...weekendDays]);
-  
-  const [days, setDays] = useState<DaySchedule[]>(weekDays);
+  // Estado único com todos os dias
+  const [allDays, setAllDays] = useState<DaySchedule[]>(initialDays);
   const [activeTask, setActiveTask] = useState<StudyTask | null>(null);
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<StudyTask | null>(null);
   const [targetDayId, setTargetDayId] = useState<string>('');
   const [viewMode, setViewMode] = useState<'weekdays' | 'weekend'>('weekdays');
 
+  // Computed value para days baseado no viewMode
+  const days = useMemo(() => {
+    if (viewMode === 'weekend') {
+      return allDays.filter(day => day.day === 'saturday' || day.day === 'sunday');
+    } else {
+      return allDays.filter(day => 
+        day.day !== 'saturday' && day.day !== 'sunday'
+      );
+    }
+  }, [allDays, viewMode]);
+
   // Função para alternar visualização
   const toggleWeekendView = () => {
-    if (viewMode === 'weekdays') {
-      setViewMode('weekend');
-      setDays(weekendDays);
-    } else {
-      setViewMode('weekdays');
-      setDays(weekDays);
-    }
+    setViewMode(viewMode === 'weekdays' ? 'weekend' : 'weekdays');
   };
 
   const sensors = useSensors(
@@ -294,32 +192,32 @@ export function StudySchedule() {
       
       if (!activeTask || !overTask) return;
 
-      const activeDayIndex = days.findIndex(day => 
+      const activeDayIndex = allDays.findIndex(day => 
         day.tasks.some(task => task.id === activeId)
       );
-      const overDayIndex = days.findIndex(day => 
+      const overDayIndex = allDays.findIndex(day => 
         day.tasks.some(task => task.id === overId)
       );
 
       if (activeDayIndex !== overDayIndex) {
         // Mover entre dias diferentes
-        setDays(prevDays => {
-          const newDays = [...prevDays];
+        setAllDays(prevAllDays => {
+          const newAllDays = [...prevAllDays];
           
           // Remover da lista original
-          newDays[activeDayIndex].tasks = newDays[activeDayIndex].tasks.filter(
+          newAllDays[activeDayIndex].tasks = newAllDays[activeDayIndex].tasks.filter(
             task => task.id !== activeId
           );
           
           // Encontrar posição na nova lista
-          const overTaskIndex = newDays[overDayIndex].tasks.findIndex(
+          const overTaskIndex = newAllDays[overDayIndex].tasks.findIndex(
             task => task.id === overId
           );
           
           // Inserir na nova posição
-          newDays[overDayIndex].tasks.splice(overTaskIndex, 0, activeTask);
+          newAllDays[overDayIndex].tasks.splice(overTaskIndex, 0, activeTask);
           
-          return newDays;
+          return newAllDays;
         });
       }
     }
@@ -339,27 +237,7 @@ export function StudySchedule() {
       const activeTask = findTaskById(activeId);
       if (!activeTask) return;
 
-      // Atualizar array de visualização
-      setDays(prevDays => {
-        const newDays = [...prevDays];
-        
-        // Remover da lista original
-        const sourceDayIndex = newDays.findIndex(day => 
-          day.tasks.some(task => task.id === activeId)
-        );
-        
-        newDays[sourceDayIndex].tasks = newDays[sourceDayIndex].tasks.filter(
-          task => task.id !== activeId
-        );
-        
-        // Adicionar ao novo dia
-        const targetDayIndex = newDays.findIndex(day => day.id === overId);
-        newDays[targetDayIndex].tasks.push(activeTask);
-        
-        return newDays;
-      });
-
-      // Atualizar array completo
+      // Atualizar apenas o array completo
       setAllDays(prevAllDays => {
         const newAllDays = [...prevAllDays];
         
@@ -387,28 +265,15 @@ export function StudySchedule() {
 
     // Se arrastamos sobre uma tarefa no mesmo dia, reordenar
     if (isTask(activeId) && isTask(overId)) {
-      const activeDayIndex = days.findIndex(day => 
+      const activeDayIndex = allDays.findIndex(day => 
         day.tasks.some(task => task.id === activeId)
       );
-      const overDayIndex = days.findIndex(day => 
+      const overDayIndex = allDays.findIndex(day => 
         day.tasks.some(task => task.id === overId)
       );
 
       if (activeDayIndex === overDayIndex) {
-        // Atualizar array de visualização
-        setDays(prevDays => {
-          const newDays = [...prevDays];
-          const dayTasks = newDays[activeDayIndex].tasks;
-          
-          const oldIndex = dayTasks.findIndex(task => task.id === activeId);
-          const newIndex = dayTasks.findIndex(task => task.id === overId);
-          
-          newDays[activeDayIndex].tasks = arrayMove(dayTasks, oldIndex, newIndex);
-          
-          return newDays;
-        });
-
-        // Atualizar array completo
+        // Atualizar apenas o array completo
         setAllDays(prevAllDays => {
           const newAllDays = [...prevAllDays];
           const allDayIndex = newAllDays.findIndex(day => 
@@ -428,7 +293,7 @@ export function StudySchedule() {
   };
 
   const findTaskById = (id: string): StudyTask | null => {
-    for (const day of days) {
+    for (const day of allDays) {
       const task = day.tasks.find(task => task.id === id);
       if (task) return task;
     }
@@ -440,23 +305,11 @@ export function StudySchedule() {
   };
 
   const isDay = (id: string): boolean => {
-    return days.some(day => day.id === id);
+    return allDays.some(day => day.id === id);
   };
 
   const handleToggleComplete = useCallback((taskId: string) => {
-    // Atualizar array de visualização
-    setDays(prevDays =>
-      prevDays.map(day => ({
-        ...day,
-        tasks: day.tasks.map(task =>
-          task.id === taskId
-            ? { ...task, completed: !task.completed }
-            : task
-        ),
-      }))
-    );
-
-    // Atualizar array completo
+    // Atualizar apenas o array completo
     setAllDays(prevAllDays =>
       prevAllDays.map(day => ({
         ...day,
@@ -488,19 +341,7 @@ export function StudySchedule() {
   const handleSaveTask = (taskData: Partial<StudyTask>) => {
     if (editingTask) {
       // Editar tarefa existente
-      // Atualizar array de visualização
-      setDays(prevDays =>
-        prevDays.map(day => ({
-          ...day,
-          tasks: day.tasks.map(task =>
-            task.id === editingTask.id
-              ? { ...task, ...taskData }
-              : task
-          ),
-        }))
-      );
-
-      // Atualizar array completo
+      // Atualizar apenas o array completo
       setAllDays(prevAllDays =>
         prevAllDays.map(day => ({
           ...day,
@@ -518,16 +359,7 @@ export function StudySchedule() {
       });
     } else {
       // Adicionar nova tarefa
-      // Atualizar array de visualização
-      setDays(prevDays =>
-        prevDays.map(day =>
-          day.id === targetDayId
-            ? { ...day, tasks: [...day.tasks, taskData as StudyTask] }
-            : day
-        )
-      );
-
-      // Atualizar array completo
+      // Atualizar apenas o array completo
       setAllDays(prevAllDays =>
         prevAllDays.map(day =>
           day.id === targetDayId
