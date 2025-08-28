@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { Clock, CheckCircle2, Circle, GripVertical, BookOpen, FlaskConical, MessageCircle, Scroll } from 'lucide-react';
+import { Clock, CheckCircle2, Circle, BookOpen, FlaskConical, MessageCircle, Scroll } from 'lucide-react';
 import { StudyTask } from '@/types/study';
 import { cn } from '@/lib/utils';
 
@@ -46,24 +46,18 @@ export function StudyCard({ task, onToggleComplete, onEdit }: StudyCardProps) {
       ref={setNodeRef}
       style={style}
       className={cn(
-        'study-card p-4 cursor-pointer group',
+        'study-card p-4 cursor-grab active:cursor-grabbing group',
         `study-card-${task.subject}`,
         isDragging && 'study-card-dragging opacity-50',
         task.completed && 'opacity-75'
       )}
       onClick={() => onEdit?.(task)}
       {...attributes}
+      {...listeners}
     >
-      {/* Header com drag handle e status */}
+      {/* Header com ícone da matéria e status */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <button
-            {...listeners}
-            className="text-muted-foreground hover:text-foreground transition-colors p-1 -ml-1"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <GripVertical className="h-4 w-4" />
-          </button>
           <SubjectIcon className={cn("h-4 w-4", `text-study-${task.subject}-foreground`)} />
           <span className={cn("text-xs font-medium", `text-study-${task.subject}-foreground`)}>
             {subjectLabels[task.subject]}
@@ -74,7 +68,7 @@ export function StudyCard({ task, onToggleComplete, onEdit }: StudyCardProps) {
             e.stopPropagation();
             onToggleComplete(task.id);
           }}
-          className="text-muted-foreground hover:text-success transition-colors"
+          className="text-muted-foreground hover:text-success transition-colors cursor-pointer"
         >
           {task.completed ? (
             <CheckCircle2 className="h-5 w-5 text-success" />

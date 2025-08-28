@@ -191,4 +191,14 @@ All colors MUST be HSL.
   .gradient-card {
     background: var(--gradient-card);
   }
+
+  /* Invisible scrollbar utility */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

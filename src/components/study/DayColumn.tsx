@@ -66,9 +66,14 @@ export function DayColumn({ day, onToggleComplete, onAddTask, onEditTask }: DayC
       <div
         ref={setNodeRef}
         className={cn(
-          "flex-1 p-2 space-y-2 min-h-[400px] transition-colors duration-200",
+          "flex-1 p-2 space-y-2 min-h-[400px] max-h-[518px] overflow-y-auto transition-colors duration-200",
+          "scrollbar-hide",
           isOver && "bg-accent/50"
         )}
+        style={{
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+        }}
       >
         <SortableContext items={day.tasks.map(task => task.id)} strategy={verticalListSortingStrategy}>
           {day.tasks.map((task) => (

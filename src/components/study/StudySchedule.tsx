@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { DndContext, DragEndEvent, DragOverEvent, DragStartEvent, PointerSensor, useSensor, useSensors, DragOverlay, closestCorners } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragOverEvent, DragStartEvent, PointerSensor, useSensor, useSensors, DragOverlay, closestCorners, closestCenter } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { Calendar, Plus, TrendingUp, Clock, BookOpen, Target } from 'lucide-react';
 import { StudyTask, DaySchedule } from '@/types/study';
@@ -545,7 +545,7 @@ export function StudySchedule() {
         {/* Grade do cronograma */}
         <DndContext
           sensors={sensors}
-          collisionDetection={closestCorners}
+          collisionDetection={closestCenter}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
